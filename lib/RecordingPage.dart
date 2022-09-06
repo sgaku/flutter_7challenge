@@ -59,10 +59,15 @@ class RecordPageState extends State<RecordPage> {
                 primary: Colors.blue,
                 onPrimary: Colors.white,
               ),
-              onPressed: () {
+              onPressed: () async {
                 onPressedTime = time;
                 try {
-                  addData();
+                  await addData();
+                  const snackBar = SnackBar(
+                    backgroundColor: Colors.green,
+                    content: Text('記録されました！'),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 } catch (e) {
                   final snackBar = SnackBar(
                     backgroundColor: Colors.red,
