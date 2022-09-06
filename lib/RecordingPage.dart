@@ -12,7 +12,7 @@ class RecordPage extends StatefulWidget {
 
 class RecordPageState extends State<RecordPage> {
   /// タイマー文字列用
-  String _time = '';
+  String time = '';
   String onPressedTime = '';
   String name = '';
   var _timer;
@@ -51,7 +51,7 @@ class RecordPageState extends State<RecordPage> {
               ),
             ),
             Text(
-              _time,
+              time,
               style: Theme.of(context).textTheme.headline4,
             ),
             ElevatedButton(
@@ -60,8 +60,16 @@ class RecordPageState extends State<RecordPage> {
                 onPrimary: Colors.white,
               ),
               onPressed: () {
-                onPressedTime = _time;
-                addData();
+                onPressedTime = time;
+                try {
+                  addData();
+                } catch (e) {
+                  final snackBar = SnackBar(
+                    backgroundColor: Colors.red,
+                    content: Text(e.toString()),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                }
               },
               child: const Text('記録する'),
             ),
@@ -85,13 +93,16 @@ class RecordPageState extends State<RecordPage> {
     /// nowをdateFormatでstringに変換する
     var timeString = dateFormat.format(now);
     if (mounted) {
-      setState(() => {_time = timeString});
+      setState(() => {time = timeString});
     }
   }
 
   Future addData() async {
+    if (name == "") {
+      throw 'ユーザーネームが登録されていません';
+    }
     await FirebaseFirestore.instance.collection('ranking').add({
-      'time': _time,
+      'time': time,
       'user': name,
     });
   }
