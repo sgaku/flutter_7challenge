@@ -34,7 +34,8 @@ class MyApp extends StatelessWidget {
 class Index extends ChangeNotifier {
   int selectedIndex = 0;
 
-  void onTapItem(int i) {
+  void onTapItem(int i,Ranking rankValue) {
+    rankValue.fetchRankingList();
     selectedIndex = i;
     notifyListeners();
   }
@@ -56,12 +57,13 @@ class MainPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final value = ref.watch(indexProvider);
+    final rankValue = ref.watch(rankingProvider);
 
     return Scaffold(
       body: _screen[value.selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: value.selectedIndex,
-        onTap: value.onTapItem,
+        onTap: (int index) => value.onTapItem(index, rankValue),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.touch_app), label: '記録する'),
           BottomNavigationBarItem(icon: Icon(Icons.reorder), label: 'ランキング'),
@@ -72,4 +74,3 @@ class MainPage extends ConsumerWidget {
     );
   }
 }
-

@@ -1,12 +1,17 @@
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_7challenge/Data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class Ranking extends ChangeNotifier {
-  List<Data>? list = [];
+  Ranking() {
+    fetchRankingList();
+  }
 
-  void fetchRankingList() async {
+  List<Data>? list = [];
+ Future<void> fetchRankingList() async {
     final QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection('ranking')
         .orderBy('time')
@@ -33,7 +38,6 @@ class RankingPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final value = ref.watch(rankingProvider);
-    value.fetchRankingList();
 
     return Scaffold(
       appBar: AppBar(

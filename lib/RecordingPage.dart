@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_7challenge/Data.dart';
 import 'package:flutter_7challenge/main.dart';
+import 'package:flutter_7challenge/RankingPage.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -38,6 +40,8 @@ class RecordPageState extends ConsumerState<RecordPage> {
   @override
   Widget build(BuildContext context) {
     final time = ref.watch(stateProvider);
+    final value = ref.watch(rankingProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('記録ページ'),
@@ -68,12 +72,17 @@ class RecordPageState extends ConsumerState<RecordPage> {
                 onPressedTime = time;
                 try {
                   await addData();
+                  await value.fetchRankingList();
+                  final list = value.list ?? [];
+                  final rank = list.indexWhere((element) {
+                    return element.user == name;
+                  });
                   ScaffoldMessengerState scaffoldMessengerState =
                       scaffoldKey.currentState!;
                   scaffoldMessengerState.showSnackBar(
-                    const SnackBar(
+                    SnackBar(
                       backgroundColor: Colors.green,
-                      content: Text('記録されました！'),
+                      content: Text('あなたの順位は${rank + 1}位です'),
                     ),
                   );
                 } catch (e) {
@@ -98,6 +107,7 @@ class RecordPageState extends ConsumerState<RecordPage> {
 
   void _onTimer(Timer timer) {
     final timerStateController = ref.read(stateProvider.notifier);
+
     /// 現在時刻を取得する
     var now = DateTime.now();
 
@@ -110,14 +120,12 @@ class RecordPageState extends ConsumerState<RecordPage> {
   }
 
   Future addData() async {
-    final time = ref.watch(stateProvider);
     if (name == "") {
       throw 'ユーザーネームが登録されていません';
     }
     await FirebaseFirestore.instance.collection('ranking').add({
-      'time': time,
+      'time': onPressedTime,
       'user': name,
     });
   }
 }
-
