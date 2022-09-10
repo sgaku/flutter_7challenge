@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_7challenge/main.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+
+
 
 class RecordPage extends StatefulWidget {
   const RecordPage({Key? key}) : super(key: key);
@@ -63,11 +67,13 @@ class RecordPageState extends State<RecordPage> {
                 onPressedTime = time;
                 try {
                   await addData();
-                  const snackBar = SnackBar(
-                    backgroundColor: Colors.green,
-                    content: Text('記録されました！'),
+                  ScaffoldMessengerState scaffoldMessengerState = scaffoldKey.currentState!;
+                  scaffoldMessengerState.showSnackBar(
+                    const SnackBar(
+                      backgroundColor: Colors.green,
+                      content: Text('記録されました！'),
+                    ),
                   );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 } catch (e) {
                   final snackBar = SnackBar(
                     backgroundColor: Colors.red,
