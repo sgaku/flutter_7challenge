@@ -3,20 +3,20 @@ import 'package:flutter_7challenge/main.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+final stateProvider = StateProvider((ref) {
+  return "";
+});
 
-
-
-class RecordPage extends StatefulWidget {
-  const RecordPage({Key? key}) : super(key: key);
+class RecordPage extends ConsumerStatefulWidget {
+  const RecordPage({super.key});
 
   @override
-  State<RecordPage> createState() => RecordPageState();
+  RecordPageState createState() => RecordPageState();
 }
 
-class RecordPageState extends State<RecordPage> {
-  /// タイマー文字列用
-  String time = '';
+class RecordPageState extends ConsumerState<RecordPage> {
   String onPressedTime = '';
   String name = '';
   var _timer;
@@ -37,6 +37,7 @@ class RecordPageState extends State<RecordPage> {
 
   @override
   Widget build(BuildContext context) {
+    final time = ref.watch(stateProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('記録ページ'),
@@ -67,7 +68,8 @@ class RecordPageState extends State<RecordPage> {
                 onPressedTime = time;
                 try {
                   await addData();
-                  ScaffoldMessengerState scaffoldMessengerState = scaffoldKey.currentState!;
+                  ScaffoldMessengerState scaffoldMessengerState =
+                      scaffoldKey.currentState!;
                   scaffoldMessengerState.showSnackBar(
                     const SnackBar(
                       backgroundColor: Colors.green,
@@ -95,6 +97,7 @@ class RecordPageState extends State<RecordPage> {
   }
 
   void _onTimer(Timer timer) {
+    final timerStateController = ref.read(stateProvider.notifier);
     /// 現在時刻を取得する
     var now = DateTime.now();
 
@@ -103,12 +106,11 @@ class RecordPageState extends State<RecordPage> {
 
     /// nowをdateFormatでstringに変換する
     var timeString = dateFormat.format(now);
-    if (mounted) {
-      setState(() => {time = timeString});
-    }
+    timerStateController.state = timeString;
   }
 
   Future addData() async {
+    final time = ref.watch(stateProvider);
     if (name == "") {
       throw 'ユーザーネームが登録されていません';
     }
@@ -118,3 +120,4 @@ class RecordPageState extends State<RecordPage> {
     });
   }
 }
+
