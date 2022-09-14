@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_7challenge/Data.dart';
 import 'package:flutter_7challenge/main.dart';
 import 'package:flutter_7challenge/RankingPage.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final stateProvider = StateProvider((ref) {
   return "";
@@ -44,6 +43,7 @@ class RecordPageState extends ConsumerState<RecordPage> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('記録ページ'),
       ),
       body: Center(
@@ -123,7 +123,11 @@ class RecordPageState extends ConsumerState<RecordPage> {
     if (name == "") {
       throw 'ユーザーネームが登録されていません';
     }
-    await FirebaseFirestore.instance.collection('ranking').add({
+    DateTime now = DateTime.now();
+    DateFormat outputFormat = DateFormat('yyyy-MM-dd');
+    String date = outputFormat.format(now);
+
+    await FirebaseFirestore.instance.collection('ranking').doc(date).collection('ranking').add({
       'time': onPressedTime,
       'user': name,
     });

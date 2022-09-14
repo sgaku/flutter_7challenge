@@ -3,8 +3,11 @@ import 'package:flutter_7challenge/RankingPage.dart';
 import 'package:flutter_7challenge/RecordingPage.dart';
 import 'package:flutter_7challenge/SettingPage.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_7challenge/launch_screen.dart';
+import 'package:flutter_7challenge/router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'firebase_options.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 
 final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 
@@ -14,18 +17,20 @@ void main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends HookConsumerWidget {
   const MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       scaffoldMessengerKey: scaffoldKey,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      initialRoute: LaunchScreen.routeName,
+      onGenerateRoute: ref.watch(routerProvider).onGenerateRoute,
       home: const MainPage(),
     );
   }
@@ -34,7 +39,7 @@ class MyApp extends StatelessWidget {
 class Index extends ChangeNotifier {
   int selectedIndex = 0;
 
-  void onTapItem(int i,Ranking rankValue) {
+  void onTapItem(int i, Ranking rankValue) {
     rankValue.fetchRankingList();
     selectedIndex = i;
     notifyListeners();
@@ -46,6 +51,12 @@ final indexProvider = ChangeNotifierProvider((ref) {
 });
 
 class MainPage extends ConsumerWidget {
+  static Route<dynamic> route() {
+    return MaterialPageRoute<dynamic>(
+      builder: (_) => const MainPage(),
+    );
+  }
+
   const MainPage({Key? key}) : super(key: key);
 
   static const _screen = [
