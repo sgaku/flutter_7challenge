@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_7challenge/RankingPage.dart';
-import 'package:flutter_7challenge/RecordingPage.dart';
-import 'package:flutter_7challenge/SettingPage.dart';
+import 'package:flutter_7challenge/screens/page/RankingPage.dart';
+import 'package:flutter_7challenge/screens/page/RecordingPage.dart';
+import 'package:flutter_7challenge/screens/page/SettingPage.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_7challenge/launch_screen.dart';
+import 'package:flutter_7challenge/screens/launch/launch_screen.dart';
 import 'package:flutter_7challenge/router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'firebase_options.dart';
+import 'Data/firestore/firebase_options.dart';
 
 
 final scaffoldKey = GlobalKey<ScaffoldMessengerState>();

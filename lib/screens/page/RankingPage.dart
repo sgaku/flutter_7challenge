@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_7challenge/Data.dart';
+import 'package:flutter_7challenge/Data/Data.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class Ranking extends ChangeNotifier {

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_7challenge/launch_screen.dart';
+import 'package:flutter_7challenge/screens/launch/launch_screen.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 

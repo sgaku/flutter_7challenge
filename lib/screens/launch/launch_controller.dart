@@ -1,6 +1,6 @@
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_7challenge/AuthRepository.dart';
+import 'package:flutter_7challenge/Data/firestore/AuthRepository.dart';
 import 'package:flutter_7challenge/main.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

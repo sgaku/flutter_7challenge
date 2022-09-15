@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'lanuch_controller.dart';
+import 'launch_controller.dart';
 
 class LaunchScreen extends HookConsumerWidget {
   const LaunchScreen({Key? key}) : super(key: key);

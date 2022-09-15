@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_7challenge/main.dart';
-import 'package:flutter_7challenge/RankingPage.dart';
+import 'package:flutter_7challenge/screens/page/RankingPage.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
