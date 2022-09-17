@@ -1,38 +1,8 @@
-import 'package:intl/intl.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_7challenge/Data/Data.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../state_management/Ranking.dart';
 
-class Ranking extends ChangeNotifier {
-  Ranking() {
-    fetchRankingList();
-  }
 
-  List<Data>? list = [];
-
-  Future<void> fetchRankingList() async {
-    DateTime now = DateTime.now();
-    DateFormat outputFormat = DateFormat('yyyy-MM-dd');
-    String date = outputFormat.format(now);
-
-    final QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('ranking')
-        .doc(date)
-        .collection('ranking')
-        .orderBy('time')
-        .get();
-
-    final List<Data> list = snapshot.docs.map((DocumentSnapshot document) {
-      Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-      final String time = data['time'];
-      final String user = data['user'];
-      return Data(time, user);
-    }).toList();
-    this.list = list;
-    notifyListeners();
-  }
-}
 
 final rankingProvider = ChangeNotifierProvider((ref) {
   return Ranking();
@@ -47,7 +17,7 @@ class RankingPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+
         title: const Text('ランキング画面'),
       ),
       body: ListView.separated(

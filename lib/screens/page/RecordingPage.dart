@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_7challenge/main.dart';
+import 'package:flutter_7challenge/screens/launch/registration_screen.dart';
 import 'package:flutter_7challenge/screens/page/RankingPage.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_7challenge/Data/firestore/AuthRepository.dart';
 
 final stateProvider = StateProvider((ref) {
   return "";
@@ -19,7 +21,9 @@ class RecordPage extends ConsumerStatefulWidget {
 
 class RecordPageState extends ConsumerState<RecordPage> {
   String onPressedTime = '';
-  String name = '';
+  bool isRecorded = false;
+
+  // String name = '';
   var _timer;
 
   @override
@@ -38,27 +42,25 @@ class RecordPageState extends ConsumerState<RecordPage> {
 
   @override
   Widget build(BuildContext context) {
+    var now = DateTime.now();
+    final username = ref.watch(userProvider);
     final time = ref.watch(stateProvider);
     final value = ref.watch(rankingProvider);
+    final auth = ref.read(authRepositoryProvider);
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         title: const Text('記録ページ'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: TextField(
-                decoration: const InputDecoration(hintText: '名前を入力してね'),
-                onChanged: (text) {
-                  name = text;
+            ElevatedButton(
+                onPressed: () async {
+                  await auth.signOut();
                 },
-              ),
-            ),
+                child: const Text("ログアウト")),
             Text(
               time,
               style: Theme.of(context).textTheme.headline4,
@@ -68,31 +70,26 @@ class RecordPageState extends ConsumerState<RecordPage> {
                 primary: Colors.blue,
                 onPrimary: Colors.white,
               ),
-              onPressed: () async {
-                onPressedTime = time;
-                try {
-                  await addData();
-                  await value.fetchRankingList();
-                  final list = value.list ?? [];
-                  final rank = list.indexWhere((element) {
-                    return element.user == name;
-                  });
-                  ScaffoldMessengerState scaffoldMessengerState =
-                      scaffoldKey.currentState!;
-                  scaffoldMessengerState.showSnackBar(
-                    SnackBar(
-                      backgroundColor: Colors.green,
-                      content: Text('あなたの順位は${rank + 1}位です'),
-                    ),
-                  );
-                } catch (e) {
-                  final snackBar = SnackBar(
-                    backgroundColor: Colors.red,
-                    content: Text(e.toString()),
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                }
-              },
+              onPressed: now.hour < 16 || now.hour > 21 || isRecorded
+                  ? null
+                  : () async {
+                      onPressedTime = time;
+                      isRecorded = true;
+                      await addData();
+                      await value.fetchRankingList();
+                      final list = value.list ?? [];
+                      final rank = list.indexWhere((element) {
+                        return element.time == onPressedTime;
+                      });
+                      ScaffoldMessengerState scaffoldMessengerState =
+                          scaffoldKey.currentState!;
+                      scaffoldMessengerState.showSnackBar(
+                        SnackBar(
+                          backgroundColor: Colors.green,
+                          content: Text('あなたの順位は${rank + 1}位です'),
+                        ),
+                      );
+                    },
               child: const Text('記録する'),
             ),
             Text(
@@ -120,14 +117,20 @@ class RecordPageState extends ConsumerState<RecordPage> {
   }
 
   Future addData() async {
-    if (name == "") {
-      throw 'ユーザーネームが登録されていません';
-    }
+    final uid = ref.read(authRepositoryProvider).getUid();
+    final snapshot =
+        await FirebaseFirestore.instance.collection('user').doc(uid).get();
+    final name = snapshot.get('name');
+
     DateTime now = DateTime.now();
     DateFormat outputFormat = DateFormat('yyyy-MM-dd');
     String date = outputFormat.format(now);
 
-    await FirebaseFirestore.instance.collection('ranking').doc(date).collection('ranking').add({
+    await FirebaseFirestore.instance
+        .collection('ranking')
+        .doc(date)
+        .collection('ranking')
+        .add({
       'time': onPressedTime,
       'user': name,
     });
