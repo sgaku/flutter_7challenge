@@ -33,4 +33,6 @@ class Ranking extends ChangeNotifier {
     this.list = list;
     notifyListeners();
   }
+
+
 }

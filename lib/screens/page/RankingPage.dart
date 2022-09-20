@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_7challenge/screens/model/Ranking.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../state_management/Ranking.dart';
+
 
 
 

@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_7challenge/Data/firestore/AuthRepository.dart';
 import 'package:flutter_7challenge/main.dart';
 import 'package:flutter_7challenge/screens/launch/registration_screen.dart';
+import 'package:flutter_7challenge/screens/model/check_user.dart';
+import 'package:flutter_7challenge/screens/page/RecordingPage.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -15,6 +17,10 @@ class LaunchController {
 
   Future<void> initialize(BuildContext ctx) async {
     context = ctx;
+    final isRecordedController = _ref.read(checkUserBoolProvider.notifier);
+    isRecordedController.state =
+        await _ref.read(checkUserProvider).checkUserDocs();
+
     bool isSignIn = _ref.read(authRepositoryProvider).isAuthenticated();
     if (isSignIn) {
       await navigateToMain();

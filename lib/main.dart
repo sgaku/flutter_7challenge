@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_7challenge/screens/model/Ranking.dart';
 import 'package:flutter_7challenge/screens/page/RankingPage.dart';
 import 'package:flutter_7challenge/screens/page/RecordingPage.dart';
 import 'package:flutter_7challenge/screens/page/SettingPage.dart';
@@ -7,8 +8,6 @@ import 'package:flutter_7challenge/screens/launch/launch_screen.dart';
 import 'package:flutter_7challenge/router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'Data/firestore/firebase_options.dart';
-import 'screens/state_management/Ranking.dart';
-
 
 final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 

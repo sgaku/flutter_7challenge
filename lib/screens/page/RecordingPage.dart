@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_7challenge/main.dart';
-import 'package:flutter_7challenge/screens/launch/registration_screen.dart';
+import 'package:flutter_7challenge/screens/model/check_user.dart';
+import 'package:flutter_7challenge/screens/model/fetch_user.dart';
+
 import 'package:flutter_7challenge/screens/page/RankingPage.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
@@ -12,6 +14,10 @@ final stateProvider = StateProvider((ref) {
   return "";
 });
 
+final checkUserBoolProvider = StateProvider((ref) {
+  return false;
+});
+
 class RecordPage extends ConsumerStatefulWidget {
   const RecordPage({super.key});
 
@@ -21,7 +27,6 @@ class RecordPage extends ConsumerStatefulWidget {
 
 class RecordPageState extends ConsumerState<RecordPage> {
   String onPressedTime = '';
-  bool isRecorded = false;
 
   // String name = '';
   var _timer;
@@ -32,6 +37,10 @@ class RecordPageState extends ConsumerState<RecordPage> {
 
     /// Timer.periodic は繰り返し実行する時に使うメソッド
     _timer = Timer.periodic(const Duration(seconds: 1), _onTimer);
+    // Future(() async {
+    //   final isRecordedController = ref.read(checkUserProvider.notifier);
+    //   isRecordedController.state = await checkUser();
+    // });
   }
 
   @override
@@ -43,8 +52,8 @@ class RecordPageState extends ConsumerState<RecordPage> {
   @override
   Widget build(BuildContext context) {
     var now = DateTime.now();
-    final username = ref.watch(userProvider);
     final time = ref.watch(stateProvider);
+    final isRecorded = ref.watch(checkUserBoolProvider);
     final value = ref.watch(rankingProvider);
     final auth = ref.read(authRepositoryProvider);
 
@@ -70,12 +79,15 @@ class RecordPageState extends ConsumerState<RecordPage> {
                 primary: Colors.blue,
                 onPrimary: Colors.white,
               ),
-              onPressed: now.hour < 16 || now.hour > 21 || isRecorded
+              onPressed: isRecorded
                   ? null
                   : () async {
                       onPressedTime = time;
-                      isRecorded = true;
                       await addData();
+                      final isRecordedController =
+                          ref.read(checkUserBoolProvider.notifier);
+                      isRecordedController.state =
+                          await ref.read(checkUserProvider).checkUserDocs();
                       await value.fetchRankingList();
                       final list = value.list ?? [];
                       final rank = list.indexWhere((element) {
@@ -117,10 +129,7 @@ class RecordPageState extends ConsumerState<RecordPage> {
   }
 
   Future addData() async {
-    final uid = ref.read(authRepositoryProvider).getUid();
-    final snapshot =
-        await FirebaseFirestore.instance.collection('user').doc(uid).get();
-    final name = snapshot.get('name');
+    final username = await ref.read(fetchUserProvider).fetchUser();
 
     DateTime now = DateTime.now();
     DateFormat outputFormat = DateFormat('yyyy-MM-dd');
@@ -132,7 +141,7 @@ class RecordPageState extends ConsumerState<RecordPage> {
         .collection('ranking')
         .add({
       'time': onPressedTime,
-      'user': name,
+      'user': username,
     });
   }
 }
