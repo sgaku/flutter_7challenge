@@ -2,10 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_7challenge/Data/firestore/AuthRepository.dart';
 import 'package:flutter_7challenge/main.dart';
+import 'package:flutter_7challenge/screens/model/check_user_unique.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-final userProvider = StateProvider((ref) {
+final userNameProvider = StateProvider((ref) {
   return "";
+});
+final userUniqueStateProvider = StateProvider((ref) {
+  return true;
 });
 
 class Registration extends ConsumerWidget {
@@ -19,8 +23,10 @@ class Registration extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(userProvider);
-    final notifier = ref.watch(userProvider.notifier);
+    final state = ref.watch(userNameProvider);
+    final isUniqueState = ref.watch(userUniqueStateProvider);
+    final isUniqueStateNotifier = ref.watch(userUniqueStateProvider.notifier);
+    final notifier = ref.watch(userNameProvider.notifier);
     return Scaffold(
       appBar: AppBar(
         title: const Text('ユーザー登録'),
@@ -31,15 +37,27 @@ class Registration extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
-                onChanged: (text) {
+                onChanged: (text) async {
                   notifier.state = text;
+                  isUniqueStateNotifier.state = await ref
+                      .read(userUniqueRepositoryProvider)
+                      .isUniqueUser(name: text);
                 },
               ),
             ),
             ElevatedButton(
-                onPressed: state.isEmpty
-                    ? null
+                onPressed: state.isEmpty || !isUniqueState
+                    ? !isUniqueState
+                        ? () {
+                            print(isUniqueState);
+                            const snackBar =
+                                SnackBar(content: Text("そのユーザーネームは既に登録されています"));
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          }
+                        : null
                     : () async {
+                        print(isUniqueState);
                         final uid = ref.read(authRepositoryProvider).getUid();
                         await FirebaseFirestore.instance
                             .collection('user')

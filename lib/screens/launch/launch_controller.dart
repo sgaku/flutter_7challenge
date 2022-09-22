@@ -17,12 +17,13 @@ class LaunchController {
 
   Future<void> initialize(BuildContext ctx) async {
     context = ctx;
-    final isRecordedController = _ref.read(checkUserBoolProvider.notifier);
-    isRecordedController.state =
-        await _ref.read(checkUserProvider).checkUserDocs();
+
 
     bool isSignIn = _ref.read(authRepositoryProvider).isAuthenticated();
     if (isSignIn) {
+      final isRecordedController = _ref.read(checkUserBoolProvider.notifier);
+      isRecordedController.state =
+      await _ref.read(checkUserProvider).checkUserDocs();
       await navigateToMain();
     } else {
       await signIn();

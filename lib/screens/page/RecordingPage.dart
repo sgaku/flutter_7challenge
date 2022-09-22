@@ -61,56 +61,64 @@ class RecordPageState extends ConsumerState<RecordPage> {
       appBar: AppBar(
         title: const Text('記録ページ'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ElevatedButton(
-                onPressed: () async {
-                  await auth.signOut();
-                },
-                child: const Text("ログアウト")),
-            Text(
-              time,
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.blue,
-                onPrimary: Colors.white,
+      body: isRecorded
+          ? const Center(
+        child: AlertDialog(
+          title: Text("今日のチャレンジは終わりました"),
+          content: Text("今日の記録が既にあるため、チャレンジすることができません"),
+        )
+      )
+          : Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  ElevatedButton(
+                      onPressed: () async {
+                        await auth.signOut();
+                      },
+                      child: const Text("ログアウト")),
+                  Text(
+                    time,
+                    style: Theme.of(context).textTheme.headline4,
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.blue,
+                      onPrimary: Colors.white,
+                    ),
+                    onPressed: isRecorded
+                        ? null
+                        : () async {
+                            onPressedTime = time;
+                            await addData();
+                            final isRecordedController =
+                                ref.read(checkUserBoolProvider.notifier);
+                            isRecordedController.state = await ref
+                                .read(checkUserProvider)
+                                .checkUserDocs();
+                            await value.fetchRankingList();
+                            final list = value.list ?? [];
+                            final rank = list.indexWhere((element) {
+                              return element.time == onPressedTime;
+                            });
+                            ScaffoldMessengerState scaffoldMessengerState =
+                                scaffoldKey.currentState!;
+                            scaffoldMessengerState.showSnackBar(
+                              SnackBar(
+                                backgroundColor: Colors.green,
+                                content: Text('あなたの順位は${rank + 1}位です'),
+                              ),
+                            );
+                          },
+                    child: const Text('記録する'),
+                  ),
+                  Text(
+                    onPressedTime,
+                    style: const TextStyle(color: Colors.green),
+                  ),
+                ],
               ),
-              onPressed: isRecorded
-                  ? null
-                  : () async {
-                      onPressedTime = time;
-                      await addData();
-                      final isRecordedController =
-                          ref.read(checkUserBoolProvider.notifier);
-                      isRecordedController.state =
-                          await ref.read(checkUserProvider).checkUserDocs();
-                      await value.fetchRankingList();
-                      final list = value.list ?? [];
-                      final rank = list.indexWhere((element) {
-                        return element.time == onPressedTime;
-                      });
-                      ScaffoldMessengerState scaffoldMessengerState =
-                          scaffoldKey.currentState!;
-                      scaffoldMessengerState.showSnackBar(
-                        SnackBar(
-                          backgroundColor: Colors.green,
-                          content: Text('あなたの順位は${rank + 1}位です'),
-                        ),
-                      );
-                    },
-              child: const Text('記録する'),
             ),
-            Text(
-              onPressedTime,
-              style: const TextStyle(color: Colors.green),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
