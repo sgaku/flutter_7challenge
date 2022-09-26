@@ -1,21 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_7challenge/Data/firestore/AuthRepository.dart';
+
+import 'package:flutter_7challenge/notification.dart';
 import 'package:flutter_7challenge/screens/launch/registration_screen.dart';
 import 'package:flutter_7challenge/screens/model/check_user_unique.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:launch_review/launch_review.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-class SettingPage extends ConsumerWidget {
+final switchValueProvider = StateProvider((ref) => false);
+
+class SettingPage extends ConsumerStatefulWidget {
   const SettingPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(userNameProvider);
-    final isUniqueUser = ref.watch(userUniqueStateProvider);
-    final notifier = ref.watch(userNameProvider.notifier);
+  SettingPageState createState() => SettingPageState();
+}
+
+class SettingPageState extends ConsumerState<SettingPage> {
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(switchValueProvider);
+    final switchValue = ref.read(switchValueProvider.notifier);
     return Scaffold(
       appBar: AppBar(
         title: const Text('設定画面'),
@@ -32,10 +40,20 @@ class SettingPage extends ConsumerWidget {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.notification_add),
-            title: const Text("通知設定"),
-            onTap: () {
-              showDialog(context: context, builder: (context) => ChangeUserDialog());
-            },
+            title: const Text("通知"),
+            trailing: Switch(
+              value: state,
+              onChanged: (bool value) async {
+                switchValue.state = value;
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setBool('switchValue', value);
+                value
+                    ? await ref
+                        .read(notificationProvider)
+                        .zonedScheduleNotification()
+                    : await ref.read(notificationProvider).cancelNotification();
+              },
+            ),
           ),
           const Divider(),
           ListTile(
@@ -49,7 +67,7 @@ class SettingPage extends ConsumerWidget {
             title: const Text("評価する"),
             onTap: () {
               LaunchReview.launch(
-                  iOSAppId: "com.gaku.flutter7challenge",
+                  iOSAppId: "com.example.flutter7challenge",
                   androidAppId: "com.example.flutter_7challenge");
             },
           ),
@@ -58,7 +76,9 @@ class SettingPage extends ConsumerWidget {
             leading: const Icon(Icons.drive_file_rename_outline),
             title: const Text("ユーザーネーム変更"),
             onTap: () {
-              showDialog(context: context, builder: (context) => ChangeUserDialog());
+              showDialog(
+                  context: context,
+                  builder: (context) => const ChangeUserDialog());
             },
           ),
         ],
@@ -107,6 +127,9 @@ class ChangeUserDialog extends ConsumerWidget {
               onPressed: isUniqueUser || state.isEmpty
                   ? isUniqueUser
                       ? () async {
+                          const snackBar =
+                              SnackBar(content: Text("新しいユーザーネームが登録されました"));
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
                           final uid = ref.read(authRepositoryProvider).getUid();
                           await FirebaseFirestore.instance
                               .collection('user')
@@ -128,4 +151,3 @@ class ChangeUserDialog extends ConsumerWidget {
     );
   }
 }
-
