@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_7challenge/Data/Data.dart';
+import 'package:flutter_7challenge/Data/local/Data.dart';
 import 'package:intl/intl.dart';
 
 class Ranking extends ChangeNotifier {
-  Ranking() {
-    fetchRankingList();
-  }
+  // Ranking() {
+  //   fetchRankingList();
+  // }
 
   List<Data>? list = [];
 

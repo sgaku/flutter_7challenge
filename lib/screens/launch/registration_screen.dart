@@ -29,7 +29,7 @@ class Registration extends ConsumerWidget {
     final notifier = ref.watch(userNameProvider.notifier);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ユーザー登録'),
+        title: const Text('ユーザー登録',style: TextStyle(color: Colors.white),),
       ),
       body: Center(
         child: Column(

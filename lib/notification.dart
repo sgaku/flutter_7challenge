@@ -10,7 +10,7 @@ final notificationProvider = Provider((ref) => Notification());
 class Notification {
   Future<void> zonedScheduleNotification() async {
     ///定時の設定
-    var notifyTime = "5:17 PM";
+    var notifyTime = "7:00 AM";
     final format = DateFormat.jm();
     TimeOfDay schedule = TimeOfDay.fromDateTime(format.parse(notifyTime));
     tz.TZDateTime nextInstanceOfTime() {

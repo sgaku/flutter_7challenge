@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 final switchValueProvider = StateProvider((ref) => false);
 
@@ -26,13 +27,16 @@ class SettingPageState extends ConsumerState<SettingPage> {
     final switchValue = ref.read(switchValueProvider.notifier);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('設定画面'),
+        title: const Text(
+          'メニュー',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: ListView(
         children: [
           ListTile(
-            leading: const Icon(Icons.account_circle),
-            title: const Text("開発者について"),
+            leading: const Icon(FontAwesomeIcons.twitter),
+            title: const Text("開発者のTwitter"),
             onTap: () {
               _twitterUrl();
             },

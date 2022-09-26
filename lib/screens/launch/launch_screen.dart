@@ -10,12 +10,12 @@ class LaunchScreen extends HookConsumerWidget {
   static const routeName = '/launch';
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
-    useEffect((){
+  Widget build(BuildContext context, WidgetRef ref) {
+    useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         ref.watch(launchControllerProvider).initialize(context);
       });
-    },[]);
+    }, []);
     return const Scaffold(
       body: SizedBox.shrink(),
     );

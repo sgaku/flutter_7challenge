@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_7challenge/Data/firestore/AuthRepository.dart';
+import 'package:analog_clock/analog_clock.dart';
 
 final stateProvider = StateProvider((ref) {
   return "";
@@ -27,8 +28,6 @@ class RecordPage extends ConsumerStatefulWidget {
 
 class RecordPageState extends ConsumerState<RecordPage> {
   String onPressedTime = '';
-
-  // String name = '';
   var _timer;
 
   @override
@@ -37,10 +36,6 @@ class RecordPageState extends ConsumerState<RecordPage> {
 
     /// Timer.periodic は繰り返し実行する時に使うメソッド
     _timer = Timer.periodic(const Duration(seconds: 1), _onTimer);
-    // Future(() async {
-    //   final isRecordedController = ref.read(checkUserProvider.notifier);
-    //   isRecordedController.state = await checkUser();
-    // });
   }
 
   @override
@@ -59,31 +54,50 @@ class RecordPageState extends ConsumerState<RecordPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('記録ページ'),
+        title: const Text(
+          '今日のチャレンジ',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
-      body: isRecorded
-          ? const Center(
-        child: AlertDialog(
-          title: Text("今日のチャレンジは終わりました"),
-          content: Text("今日の記録が既にあるため、チャレンジすることができません"),
-        )
-      )
+      body: isRecorded || now.hour < 6 || now.hour > 20
+          ? isRecorded
+              ? const Center(
+                  child: AlertDialog(
+                  title: Text("今日のチャレンジは終わりました"),
+                  content: Text("今日の記録が既に存在します。また明日チャレンジしましょう"),
+                ))
+              : const Center(
+                  child: AlertDialog(
+                  title: Text("今日のチャレンジは終わりました"),
+                  content: Text("AM7:00-8:00を過ぎました。また明日チャレンジしましょう"),
+                ))
           : Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  ElevatedButton(
-                      onPressed: () async {
-                        await auth.signOut();
-                      },
-                      child: const Text("ログアウト")),
-                  Text(
-                    time,
-                    style: Theme.of(context).textTheme.headline4,
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: AnalogClock(
+                      height: 300,
+                      width: 300,
+                      showDigitalClock: false,
+                    ),
+                  ),
+                  // ElevatedButton(
+                  //     onPressed: () async {
+                  //       await auth.signOut();
+                  //     },
+                  //     child: const Text("ログアウト")),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      time,
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.blue,
+                      primary: Colors.orange,
                       onPrimary: Colors.white,
                     ),
                     onPressed: isRecorded

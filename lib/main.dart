@@ -8,13 +8,36 @@ import 'package:flutter_7challenge/screens/launch/launch_screen.dart';
 import 'package:flutter_7challenge/router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'Data/firestore/firebase_options.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:timezone/timezone.dart' as tz;
+
 
 final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await _configureLocalTimeZone();
+
+  await flutterLocalNotificationsPlugin.initialize(
+    const InitializationSettings(
+      iOS: DarwinInitializationSettings(),
+    ),
+
+
+
+  );
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const ProviderScope(child: MyApp()));
+}
+
+Future<void> _configureLocalTimeZone() async {
+  tz.initializeTimeZones();
+  final String timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
+  tz.setLocalLocation(tz.getLocation(timeZoneName));
 }
 
 class MyApp extends HookConsumerWidget {
@@ -27,7 +50,7 @@ class MyApp extends HookConsumerWidget {
       scaffoldMessengerKey: scaffoldKey,
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.orange,
       ),
       initialRoute: LaunchScreen.routeName,
       onGenerateRoute: ref.watch(routerProvider).onGenerateRoute,
@@ -78,7 +101,7 @@ class MainPage extends ConsumerWidget {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.touch_app), label: '記録する'),
           BottomNavigationBarItem(icon: Icon(Icons.reorder), label: 'ランキング'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: '設定'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'メニュー'),
         ],
         type: BottomNavigationBarType.fixed,
       ),
