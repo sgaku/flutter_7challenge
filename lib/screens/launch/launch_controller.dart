@@ -37,16 +37,7 @@ class LaunchController {
           await _ref.read(checkUserProvider).checkUserDocs();
       await navigateToMain();
     } else {
-      await signIn();
       await navigateToRegistration();
-    }
-  }
-
-  Future<void> signIn() async {
-    try {
-      await _ref.read(authRepositoryProvider).signIn();
-    } on Exception catch (e) {
-      print(e);
     }
   }
 

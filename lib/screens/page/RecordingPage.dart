@@ -59,17 +59,21 @@ class RecordPageState extends ConsumerState<RecordPage> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: isRecorded || now.hour < 6 || now.hour > 20
+       body: isRecorded  // || now.hour < 6 || now.hour > 24
           ? isRecorded
-              ? const Center(
+              ? Center(
                   child: AlertDialog(
-                  title: Text("今日のチャレンジは終わりました"),
-                  content: Text("今日の記録が既に存在します。また明日チャレンジしましょう"),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  title: const Text("今日のチャレンジは終わりました"),
+                  content: const Text("今日の記録が既に存在します。また明日チャレンジしましょう"),
                 ))
-              : const Center(
+              : Center(
                   child: AlertDialog(
-                  title: Text("今日のチャレンジは終わりました"),
-                  content: Text("AM7:00-8:00を過ぎました。また明日チャレンジしましょう"),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  title: const Text("今日のチャレンジは終わりました"),
+                  content: const Text("AM7:00-8:00を過ぎました。また明日チャレンジしましょう"),
                 ))
           : Center(
               child: Column(
@@ -97,8 +101,9 @@ class RecordPageState extends ConsumerState<RecordPage> {
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.orange,
+                      primary: Colors.green,
                       onPrimary: Colors.white,
+                      shape: const StadiumBorder(),
                     ),
                     onPressed: isRecorded
                         ? null

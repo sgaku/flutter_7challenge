@@ -24,11 +24,14 @@ class RankingPage extends ConsumerWidget {
         ),
       ),
       body: !isRecorded
-          ? const Center(
-          child: AlertDialog(
-            title: Text("記録しにいこう！"),
-            content: Text("あなたが記録するまで、ランキングを見ることができません"),
-          ))
+          ?  Center(
+              child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10)
+              ),
+              title: const Text("記録しにいこう！"),
+              content: const Text("あなたが記録するまで、ランキングを見ることができません"),
+            ))
           : ListView.separated(
               itemBuilder: (context, index) => ListTile(
                 leading: ExcludeSemantics(
