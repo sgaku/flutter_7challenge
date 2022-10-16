@@ -3,7 +3,7 @@ import 'package:flutter_7challenge/view_model/Ranking.dart';
 import 'package:flutter_7challenge/view/recording_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../common/record_alert_dialog.dart';
+import '../common/class/record_alert_dialog.dart';
 
 final rankingProvider = ChangeNotifierProvider((ref) {
   return Ranking();

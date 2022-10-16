@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_7challenge/Data/local/user.dart';
-import 'package:flutter_7challenge/common/format_for_now.dart';
+import 'package:flutter_7challenge/common/method/format_for_now.dart';
 
 class Ranking extends ChangeNotifier {
   List<User>? list = [];

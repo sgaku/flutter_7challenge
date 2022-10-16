@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_7challenge/Data/repository/auth_repository.dart';
+import 'package:flutter_7challenge/Data/repository/user_repository.dart';
 import 'package:flutter_7challenge/view_model/check_user_unique.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -9,7 +10,7 @@ import '../top_view.dart';
 final userNameProvider = StateProvider((ref) {
   return "";
 });
-final userUniqueStateProvider = StateProvider((ref) {
+final userUniqueProvider = StateProvider((ref) {
   return true;
 });
 
@@ -31,9 +32,9 @@ class RegistrationView extends ConsumerStatefulWidget {
 class RegistrationViewState extends ConsumerState<RegistrationView> {
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(userNameProvider);
-    final isUniqueState = ref.watch(userUniqueStateProvider);
-    final notifier = ref.watch(userNameProvider.notifier);
+    final userName = ref.watch(userNameProvider);
+    final isUniqueUser = ref.watch(userUniqueProvider);
+    final userNameController = ref.watch(userNameProvider.notifier);
     final isIndicate = ref.watch(isIndicateProvider);
     return Stack(children: [
       Scaffold(
@@ -51,11 +52,11 @@ class RegistrationViewState extends ConsumerState<RegistrationView> {
                 padding: const EdgeInsets.all(24.0),
                 child: TextField(
                   onChanged: (text) async {
-                    notifier.state = text;
+                    userNameController.state = text;
                     final isUniqueController =
-                        ref.read(userUniqueStateProvider.notifier);
+                        ref.read(userUniqueProvider.notifier);
                     isUniqueController.state = await ref
-                        .read(checkUserUniqueProvider)
+                        .read(userProvider)
                         .isUniqueUser(name: text);
                   },
                 ),
@@ -66,8 +67,8 @@ class RegistrationViewState extends ConsumerState<RegistrationView> {
                     onPrimary: Colors.white,
                     shape: const StadiumBorder(),
                   ),
-                  onPressed: state.isEmpty || !isUniqueState
-                      ? !isUniqueState
+                  onPressed: userName.isEmpty || !isUniqueUser
+                      ? !isUniqueUser
                           ? () {
                               const snackBar = SnackBar(
                                   content: Text("そのユーザーネームは既に登録されています"));
@@ -81,13 +82,12 @@ class RegistrationViewState extends ConsumerState<RegistrationView> {
                           try {
                             isIndicateController.state = true;
                             await signIn();
-                            final uid =
-                                ref.read(authProvider).getUid();
+                            final uid = ref.read(authProvider).getUid();
                             await FirebaseFirestore.instance
                                 .collection('user')
                                 .doc(uid)
                                 .set({
-                              'name': state,
+                              'name': userName,
                             });
                           } finally {
                             isIndicateController.state = false;

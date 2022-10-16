@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_7challenge/Data/repository/auth_repository.dart';
 import 'package:flutter_7challenge/Data/repository/notification_repository.dart';
+import 'package:flutter_7challenge/Data/repository/user_repository.dart';
 import 'package:flutter_7challenge/view/registration/registration_screen.dart';
 import 'package:flutter_7challenge/view_model/check_user_record.dart';
 import 'package:flutter_7challenge/view/recording_view.dart';
@@ -36,7 +37,7 @@ class LaunchController {
     if (isSignIn) {
       final isRecordedController = _ref.read(checkUserRecordProvider.notifier);
       isRecordedController.state =
-          await _ref.read(checkUserProvider).isUserAlreadyRecorded();
+          await _ref.read(userProvider).isUserAlreadyRecorded();
       await navigateToMain();
     } else {
       await navigateToRegistration();

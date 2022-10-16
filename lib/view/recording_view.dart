@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_7challenge/common/record_alert_dialog.dart';
+import 'package:flutter_7challenge/common/class/record_alert_dialog.dart';
 import 'package:flutter_7challenge/main.dart';
 import 'package:flutter_7challenge/view_model/check_user_record.dart';
 import 'package:flutter_7challenge/view_model/fetch_user.dart';
@@ -12,7 +12,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:analog_clock/analog_clock.dart';
 
-import '../common/format_for_now.dart';
+import '../Data/repository/user_repository.dart';
+import '../common/method/format_for_now.dart';
 
 final nowProvider = StateProvider((ref) {
   return "";
@@ -108,7 +109,7 @@ class RecordPageState extends ConsumerState<RecordingView> {
                             final isRecordedController =
                                 ref.read(checkUserRecordProvider.notifier);
                             isRecordedController.state = await ref
-                                .read(checkUserProvider)
+                                .read(userProvider)
                                 .isUserAlreadyRecorded();
                             await ranking.fetchRankingList();
                             final list = ranking.list ?? [];
@@ -144,7 +145,7 @@ class RecordPageState extends ConsumerState<RecordingView> {
   }
 
   Future addData() async {
-    final username = await ref.read(fetchUserNameProvider).fetchUser();
+    final username = await ref.read(userProvider).fetchUser();
     final auth = FirebaseAuth.instance;
     final uid = auth.currentUser!.uid;
 

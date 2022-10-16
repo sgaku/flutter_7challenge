@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_7challenge/Data/repository/auth_repository.dart';
 
 import 'package:flutter_7challenge/Data/repository/notification_repository.dart';
+import 'package:flutter_7challenge/Data/repository/user_repository.dart';
+import 'package:flutter_7challenge/common/class/url.dart';
 import 'package:flutter_7challenge/view/registration/registration_screen.dart';
 import 'package:flutter_7challenge/view_model/check_user_unique.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 final switchValueProvider = StateProvider((ref) => false);
 
@@ -55,7 +57,7 @@ class SettingViewState extends ConsumerState<SettingView> {
             leading: const Icon(FontAwesomeIcons.twitter),
             title: const Text("開発者のTwitter"),
             onTap: () {
-              _twitterUrl();
+              moveUrl(Uri.parse(Url.twitter));
             },
           ),
           const Divider(),
@@ -89,7 +91,7 @@ class SettingViewState extends ConsumerState<SettingView> {
             leading: const Icon(Icons.contact_support),
             title: const Text("お問い合わせ"),
             onTap: () {
-              _contactUrl();
+              moveUrl(Uri.parse(Url.contact));
             },
           ),
           const Divider(),
@@ -97,7 +99,7 @@ class SettingViewState extends ConsumerState<SettingView> {
             leading: const Icon(Icons.policy),
             title: const Text("プライバシーポリシー"),
             onTap: () {
-              _policyUrl();
+              moveUrl(Uri.parse(Url.privacyPolicy));
             },
           ),
         ],
@@ -106,38 +108,13 @@ class SettingViewState extends ConsumerState<SettingView> {
   }
 }
 
-Future<void> _contactUrl() async {
-  Uri contactLink = Uri.parse(
-      'https://chain-thrill-de7.notion.site/358cb66bb9f1464a9bf75042c695ebf9');
+Future<void> moveUrl(Uri uri) async {
   if (!await launchUrl(
-    contactLink,
+    uri,
     mode: LaunchMode.inAppWebView,
     webViewConfiguration: const WebViewConfiguration(enableJavaScript: false),
   )) {
-    throw 'Could not launch $contactLink';
-  }
-}
-
-Future<void> _twitterUrl() async {
-  Uri twitterLink = Uri.parse('https://twitter.com/5fmclNZlCEw8jeg');
-  if (!await launchUrl(
-    twitterLink,
-    mode: LaunchMode.inAppWebView,
-    webViewConfiguration: const WebViewConfiguration(enableJavaScript: false),
-  )) {
-    throw 'Could not launch $twitterLink';
-  }
-}
-
-Future<void> _policyUrl() async {
-  Uri policyUrl = Uri.parse(
-      'https://chain-thrill-de7.notion.site/f3e4ceea269c469f9deb012cd84f2a47');
-  if (!await launchUrl(
-    policyUrl,
-    mode: LaunchMode.inAppWebView,
-    webViewConfiguration: const WebViewConfiguration(enableJavaScript: false),
-  )) {
-    throw 'Could not launch $policyUrl';
+    throw 'Could not launch $uri';
   }
 }
 
@@ -146,9 +123,9 @@ class ChangeUserDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(userNameProvider);
-    final isUniqueUser = ref.watch(userUniqueStateProvider);
-    final notifier = ref.watch(userNameProvider.notifier);
+    final userName = ref.watch(userNameProvider);
+    final isUniqueUser = ref.watch(userUniqueProvider);
+    final userNameController = ref.watch(userNameProvider.notifier);
     return SimpleDialog(
       children: [
         Padding(
@@ -156,10 +133,10 @@ class ChangeUserDialog extends ConsumerWidget {
           child: TextField(
             decoration: const InputDecoration(hintText: 'ユーザーネームを変更しよう'),
             onChanged: (text) async {
-              notifier.state = text;
-              final isUnique = ref.read(userUniqueStateProvider.notifier);
+              userNameController.state = text;
+              final isUnique = ref.read(userUniqueProvider.notifier);
               isUnique.state = await ref
-                  .read(checkUserUniqueProvider)
+                  .read(userProvider)
                   .isUniqueUser(name: text);
             },
           ),
@@ -167,7 +144,7 @@ class ChangeUserDialog extends ConsumerWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: TextButton(
-              onPressed: isUniqueUser || state.isEmpty
+              onPressed: isUniqueUser || userName.isEmpty
                   ? isUniqueUser
                       ? () async {
                           const snackBar =
@@ -178,7 +155,7 @@ class ChangeUserDialog extends ConsumerWidget {
                               .collection('user')
                               .doc(uid)
                               .update({
-                            'name': state,
+                            'name': userName,
                           });
                           Navigator.pop(context);
                         }
