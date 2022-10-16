@@ -2,8 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_7challenge/common/class/record_alert_dialog.dart';
 import 'package:flutter_7challenge/main.dart';
-
-import 'package:flutter_7challenge/view/ranking_view.dart';
+import 'package:flutter_7challenge/view_model/ranking_notifier.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -51,7 +50,7 @@ class RecordPageState extends ConsumerState<RecordingView> {
     var now = DateTime.now();
     final time = ref.watch(nowProvider);
     final isRecorded = ref.watch(checkUserRecordProvider);
-    final ranking = ref.watch(rankingProvider);
+    final ranking = ref.watch(rankingStateProvider);
     // final auth = ref.read(authRepositoryProvider);
 
     return Scaffold(
@@ -96,7 +95,7 @@ class RecordPageState extends ConsumerState<RecordingView> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
-                     foregroundColor: Colors.white,
+                      foregroundColor: Colors.white,
                       shape: const StadiumBorder(),
                     ),
                     onPressed: isRecorded
@@ -109,8 +108,10 @@ class RecordPageState extends ConsumerState<RecordingView> {
                             isRecordedController.state = await ref
                                 .read(userProvider)
                                 .isUserAlreadyRecorded();
-                            await ranking.fetchRankingList();
-                            final list = ranking.list ?? [];
+                            await ref
+                                .read(rankingStateProvider.notifier)
+                                .fetchRankingList();
+                            final list = ranking.userList!;
                             final rank = list.indexWhere((element) {
                               return element.time == onPressedTime;
                             });

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../view_model/ranking_notifier.dart';
 import 'ranking_view.dart';
 import 'recording_view.dart';
 import 'setting_view.dart';
@@ -23,14 +24,16 @@ class TopView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final value = ref.watch(bottomNavigationIndexProvider);
-    final rankValue = ref.watch(rankingProvider);
+    final bottomNavigation = ref.watch(bottomNavigationIndexProvider);
 
     return Scaffold(
-      body: _screen[value.selectedIndex],
+      body: _screen[bottomNavigation.selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: value.selectedIndex,
-        onTap: (int index) => value.onTapItem(index, rankValue),
+        currentIndex: bottomNavigation.selectedIndex,
+        onTap: (int index) {
+          final rankingNotifier = ref.read(rankingStateProvider.notifier);
+          bottomNavigation.onTapItem(index, rankingNotifier);
+        },
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.touch_app), label: '記録する'),
           BottomNavigationBarItem(icon: Icon(Icons.reorder), label: 'ランキング'),
