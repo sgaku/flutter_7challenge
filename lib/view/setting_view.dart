@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_7challenge/Data/repository/auth_repository.dart';
-
 import 'package:flutter_7challenge/Data/repository/notification_repository.dart';
 import 'package:flutter_7challenge/Data/repository/user_repository.dart';
 import 'package:flutter_7challenge/common/class/url.dart';
 import 'package:flutter_7challenge/view/registration/registration_screen.dart';
-import 'package:flutter_7challenge/view_model/check_user_unique.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -135,9 +133,8 @@ class ChangeUserDialog extends ConsumerWidget {
             onChanged: (text) async {
               userNameController.state = text;
               final isUnique = ref.read(userUniqueProvider.notifier);
-              isUnique.state = await ref
-                  .read(userProvider)
-                  .isUniqueUser(name: text);
+              isUnique.state =
+                  await ref.read(userProvider).isUniqueUser(name: text);
             },
           ),
         ),

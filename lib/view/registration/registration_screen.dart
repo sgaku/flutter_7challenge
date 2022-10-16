@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_7challenge/Data/repository/auth_repository.dart';
 import 'package:flutter_7challenge/Data/repository/user_repository.dart';
-import 'package:flutter_7challenge/view_model/check_user_unique.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../top_view.dart';
@@ -63,8 +62,8 @@ class RegistrationViewState extends ConsumerState<RegistrationView> {
               ),
               ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.green,
-                    onPrimary: Colors.white,
+                    backgroundColor: Colors.green,
+                   foregroundColor: Colors.white,
                     shape: const StadiumBorder(),
                   ),
                   onPressed: userName.isEmpty || !isUniqueUser

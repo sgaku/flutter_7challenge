@@ -2,8 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_7challenge/common/class/record_alert_dialog.dart';
 import 'package:flutter_7challenge/main.dart';
-import 'package:flutter_7challenge/view_model/check_user_record.dart';
-import 'package:flutter_7challenge/view_model/fetch_user.dart';
 
 import 'package:flutter_7challenge/view/ranking_view.dart';
 import 'dart:async';
@@ -97,8 +95,8 @@ class RecordPageState extends ConsumerState<RecordingView> {
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.green,
-                      onPrimary: Colors.white,
+                      backgroundColor: Colors.green,
+                     foregroundColor: Colors.white,
                       shape: const StadiumBorder(),
                     ),
                     onPressed: isRecorded
