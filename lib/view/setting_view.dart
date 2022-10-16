@@ -1,26 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_7challenge/Data/firestore/AuthRepository.dart';
+import 'package:flutter_7challenge/Data/repository/auth_repository.dart';
 
-import 'package:flutter_7challenge/notification_repository.dart';
-import 'package:flutter_7challenge/screens/launch/registration_screen.dart';
-import 'package:flutter_7challenge/screens/view_model/check_user_unique.dart';
+import 'package:flutter_7challenge/Data/repository/notification_repository.dart';
+import 'package:flutter_7challenge/view/registration/registration_screen.dart';
+import 'package:flutter_7challenge/view_model/check_user_unique.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:launch_review/launch_review.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 final switchValueProvider = StateProvider((ref) => false);
 
-class SettingPage extends ConsumerStatefulWidget {
-  const SettingPage({super.key});
+class SettingView extends ConsumerStatefulWidget {
+  const SettingView({super.key});
 
   @override
-  SettingPageState createState() => SettingPageState();
+  SettingViewState createState() => SettingViewState();
 }
 
-class SettingPageState extends ConsumerState<SettingPage> {
+class SettingViewState extends ConsumerState<SettingView> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(switchValueProvider);
@@ -108,8 +107,8 @@ class SettingPageState extends ConsumerState<SettingPage> {
 }
 
 Future<void> _contactUrl() async {
-  Uri contactLink =
-      Uri.parse('https://chain-thrill-de7.notion.site/358cb66bb9f1464a9bf75042c695ebf9');
+  Uri contactLink = Uri.parse(
+      'https://chain-thrill-de7.notion.site/358cb66bb9f1464a9bf75042c695ebf9');
   if (!await launchUrl(
     contactLink,
     mode: LaunchMode.inAppWebView,
@@ -131,8 +130,8 @@ Future<void> _twitterUrl() async {
 }
 
 Future<void> _policyUrl() async {
-  Uri policyUrl =
-      Uri.parse('https://chain-thrill-de7.notion.site/f3e4ceea269c469f9deb012cd84f2a47');
+  Uri policyUrl = Uri.parse(
+      'https://chain-thrill-de7.notion.site/f3e4ceea269c469f9deb012cd84f2a47');
   if (!await launchUrl(
     policyUrl,
     mode: LaunchMode.inAppWebView,
@@ -160,7 +159,7 @@ class ChangeUserDialog extends ConsumerWidget {
               notifier.state = text;
               final isUnique = ref.read(userUniqueStateProvider.notifier);
               isUnique.state = await ref
-                  .read(userUniqueRepositoryProvider)
+                  .read(checkUserUniqueProvider)
                   .isUniqueUser(name: text);
             },
           ),
@@ -174,7 +173,7 @@ class ChangeUserDialog extends ConsumerWidget {
                           const snackBar =
                               SnackBar(content: Text("新しいユーザーネームが登録されました"));
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                          final uid = ref.read(authRepositoryProvider).getUid();
+                          final uid = ref.read(authProvider).getUid();
                           await FirebaseFirestore.instance
                               .collection('user')
                               .doc(uid)

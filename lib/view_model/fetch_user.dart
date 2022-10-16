@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final fetchUserProvider = Provider((ref) => FetchUser());
+final fetchUserNameProvider = Provider((ref) => FetchUserName());
 
-class FetchUser {
+class FetchUserName {
   final _fireStore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
 

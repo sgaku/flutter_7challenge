@@ -1,32 +1,35 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_7challenge/common/record_alert_dialog.dart';
 import 'package:flutter_7challenge/main.dart';
-import 'package:flutter_7challenge/screens/view_model/check_user.dart';
-import 'package:flutter_7challenge/screens/view_model/fetch_user.dart';
+import 'package:flutter_7challenge/view_model/check_user_record.dart';
+import 'package:flutter_7challenge/view_model/fetch_user.dart';
 
-import 'package:flutter_7challenge/screens/view/RankingPage.dart';
+import 'package:flutter_7challenge/view/ranking_view.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter_7challenge/Data/firestore/AuthRepository.dart';
 import 'package:analog_clock/analog_clock.dart';
 
-final stateProvider = StateProvider((ref) {
+import '../common/format_for_now.dart';
+
+final nowProvider = StateProvider((ref) {
   return "";
 });
 
-final checkUserBoolProvider = StateProvider((ref) {
+final checkUserRecordProvider = StateProvider((ref) {
   return false;
 });
 
-class RecordPage extends ConsumerStatefulWidget {
-  const RecordPage({super.key});
+class RecordingView extends ConsumerStatefulWidget {
+  const RecordingView({super.key});
 
   @override
   RecordPageState createState() => RecordPageState();
 }
 
-class RecordPageState extends ConsumerState<RecordPage> {
+class RecordPageState extends ConsumerState<RecordingView> {
   String onPressedTime = '';
   var _timer;
 
@@ -46,11 +49,10 @@ class RecordPageState extends ConsumerState<RecordPage> {
 
   @override
   Widget build(BuildContext context) {
-
     var now = DateTime.now();
-    final time = ref.watch(stateProvider);
-    final isRecorded = ref.watch(checkUserBoolProvider);
-    final value = ref.watch(rankingProvider);
+    final time = ref.watch(nowProvider);
+    final isRecorded = ref.watch(checkUserRecordProvider);
+    final ranking = ref.watch(rankingProvider);
     // final auth = ref.read(authRepositoryProvider);
 
     return Scaffold(
@@ -60,27 +62,19 @@ class RecordPageState extends ConsumerState<RecordPage> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: isRecorded  ||  now.hour <= 6 || now.hour >= 8
+      body: isRecorded || now.hour <= 6 || now.hour >= 8
           ? isRecorded
-              ? Center(
-                  child: AlertDialog(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  title: const Text("今日のチャレンジは終わりました"),
-                  content: const Text("今日の記録が既に存在します。また明日チャレンジしましょう"),
-                ))
-              : Center(
-                  child: AlertDialog(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  title: const Text("今日のチャレンジは終わりました"),
-                  content: const Text("AM7:00-8:00を過ぎました。また明日チャレンジしましょう"),
-                ))
+              ? const RecordAlertDialog(
+                  title: Text("今日のチャレンジは終わりました"),
+                  content: Text("今日の記録が既に存在します。また明日チャレンジしましょう"))
+              : const RecordAlertDialog(
+                  title: Text("今日のチャレンジは終わりました"),
+                  content: Text("AM7:00-8:00を過ぎました。また明日チャレンジしましょう"))
           : Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                   const Padding(
+                  const Padding(
                     padding: EdgeInsets.all(8.0),
                     child: AnalogClock(
                       height: 300,
@@ -112,12 +106,12 @@ class RecordPageState extends ConsumerState<RecordPage> {
                             onPressedTime = time;
                             await addData();
                             final isRecordedController =
-                                ref.read(checkUserBoolProvider.notifier);
+                                ref.read(checkUserRecordProvider.notifier);
                             isRecordedController.state = await ref
                                 .read(checkUserProvider)
-                                .checkUserDocs();
-                            await value.fetchRankingList();
-                            final list = value.list ?? [];
+                                .isUserAlreadyRecorded();
+                            await ranking.fetchRankingList();
+                            final list = ranking.list ?? [];
                             final rank = list.indexWhere((element) {
                               return element.time == onPressedTime;
                             });
@@ -143,26 +137,18 @@ class RecordPageState extends ConsumerState<RecordPage> {
   }
 
   void _onTimer(Timer timer) {
-    final timerStateController = ref.read(stateProvider.notifier);
-
-    /// 現在時刻を取得する
     var now = DateTime.now();
-
-    /// 「時:分:秒」表記に文字列を変換するdateFormatを宣言する
     var dateFormat = DateFormat('HH:mm:ss');
-
-    /// nowをdateFormatでstringに変換する
     var timeString = dateFormat.format(now);
-    timerStateController.state = timeString;
+    ref.read(nowProvider.notifier).update((state) => state = timeString);
   }
 
   Future addData() async {
-    final username = await ref.read(fetchUserProvider).fetchUser();
+    final username = await ref.read(fetchUserNameProvider).fetchUser();
+    final auth = FirebaseAuth.instance;
+    final uid = auth.currentUser!.uid;
 
-    DateTime now = DateTime.now();
-    DateFormat outputFormat = DateFormat('yyyy-MM-dd');
-    String date = outputFormat.format(now);
-
+    var date = formatForNow();
     await FirebaseFirestore.instance
         .collection('ranking')
         .doc(date)
@@ -170,6 +156,7 @@ class RecordPageState extends ConsumerState<RecordPage> {
         .add({
       'time': onPressedTime,
       'user': username,
+      'uid': uid,
     });
   }
 }

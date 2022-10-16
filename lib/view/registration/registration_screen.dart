@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_7challenge/Data/firestore/AuthRepository.dart';
-import 'package:flutter_7challenge/main.dart';
-import 'package:flutter_7challenge/screens/view_model/check_user_unique.dart';
+import 'package:flutter_7challenge/Data/repository/auth_repository.dart';
+import 'package:flutter_7challenge/view_model/check_user_unique.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import '../top_view.dart';
 
 final userNameProvider = StateProvider((ref) {
   return "";
@@ -14,20 +15,20 @@ final userUniqueStateProvider = StateProvider((ref) {
 
 final isIndicateProvider = StateProvider((ref) => false);
 
-class Registration extends ConsumerStatefulWidget {
+class RegistrationView extends ConsumerStatefulWidget {
   static Route<dynamic> route() {
     return MaterialPageRoute<dynamic>(
-      builder: (_) => const Registration(),
+      builder: (_) => const RegistrationView(),
     );
   }
 
   @override
-  RegistrationState createState() => RegistrationState();
+  RegistrationViewState createState() => RegistrationViewState();
 
-  const Registration({super.key});
+  const RegistrationView({super.key});
 }
 
-class RegistrationState extends ConsumerState<Registration> {
+class RegistrationViewState extends ConsumerState<RegistrationView> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(userNameProvider);
@@ -54,7 +55,7 @@ class RegistrationState extends ConsumerState<Registration> {
                     final isUniqueController =
                         ref.read(userUniqueStateProvider.notifier);
                     isUniqueController.state = await ref
-                        .read(userUniqueRepositoryProvider)
+                        .read(checkUserUniqueProvider)
                         .isUniqueUser(name: text);
                   },
                 ),
@@ -81,7 +82,7 @@ class RegistrationState extends ConsumerState<Registration> {
                             isIndicateController.state = true;
                             await signIn();
                             final uid =
-                                ref.read(authRepositoryProvider).getUid();
+                                ref.read(authProvider).getUid();
                             await FirebaseFirestore.instance
                                 .collection('user')
                                 .doc(uid)
@@ -91,7 +92,7 @@ class RegistrationState extends ConsumerState<Registration> {
                           } finally {
                             isIndicateController.state = false;
                             Navigator.of(context).pushAndRemoveUntil(
-                              MainPage.route(),
+                              TopView.route(),
                               (route) => false,
                             );
                           }
@@ -113,7 +114,7 @@ class RegistrationState extends ConsumerState<Registration> {
 
   Future<void> signIn() async {
     try {
-      await ref.read(authRepositoryProvider).signIn();
+      await ref.read(authProvider).signIn();
     } on Exception catch (e) {
       print(e);
     }

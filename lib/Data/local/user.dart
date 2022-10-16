@@ -1,8 +1,8 @@
-class Data {
+class User {
   String time;
   String user;
 
-  Data(
+  User(
     this.time,
     this.user,
   );

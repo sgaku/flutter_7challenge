@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_7challenge/screens/launch/launch_screen.dart';
+import 'package:flutter_7challenge/view/launch/launch_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 
@@ -9,10 +9,10 @@ final routerProvider = Provider((_) => _Router());
 class _Router {
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case LaunchScreen.routeName:
-        return fadeRoute(const LaunchScreen(), settings);
+      case LaunchView.routeName:
+        return fadeRoute(const LaunchView(), settings);
       default:
-        return fadeRoute(const LaunchScreen(), settings);
+        return fadeRoute(const LaunchView(), settings);
     }
   }
 }

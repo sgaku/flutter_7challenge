@@ -4,8 +4,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'launch_controller.dart';
 
-class LaunchScreen extends HookConsumerWidget {
-  const LaunchScreen({Key? key}) : super(key: key);
+class LaunchView extends HookConsumerWidget {
+  const LaunchView({Key? key}) : super(key: key);
 
   static const routeName = '/launch';
 

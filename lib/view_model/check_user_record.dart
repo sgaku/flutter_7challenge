@@ -1,29 +1,30 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_7challenge/screens/view_model/fetch_user.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
-final checkUserProvider = Provider((ref) => CheckUser(ref));
+import '../common/format_for_now.dart';
 
-class CheckUser{
-  CheckUser(this.ref);
+final checkUserProvider = Provider((ref) => CheckUserRecord(ref));
+
+class CheckUserRecord {
+  CheckUserRecord(this.ref);
+
   final Ref ref;
 
-  Future<bool> checkUserDocs() async {
-    final username = await ref.read(fetchUserProvider).fetchUser();
-    DateTime now = DateTime.now();
-    DateFormat outputFormat = DateFormat('yyyy-MM-dd');
-    String date = outputFormat.format(now);
+  ///ユーザーが既に記録しているかどうかを確認する
+  Future<bool> isUserAlreadyRecorded() async {
+    final auth = FirebaseAuth.instance;
+    final uid = auth.currentUser!.uid;
 
-    final user = await FirebaseFirestore.instance
+    var date = formatForNow();
+
+    final id = await FirebaseFirestore.instance
         .collection('ranking')
         .doc(date)
         .collection('ranking')
-        .where('user', isEqualTo: username)
+        .where('uid', isEqualTo: uid)
         .get();
 
-    return user.docs.isEmpty ? false : true;
+    return id.docs.isEmpty ? false : true;
   }
-
 }
