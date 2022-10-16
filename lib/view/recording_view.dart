@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_7challenge/main.dart';
-import 'package:flutter_7challenge/screens/model/check_user.dart';
-import 'package:flutter_7challenge/screens/model/fetch_user.dart';
+import 'package:flutter_7challenge/screens/view_model/check_user.dart';
+import 'package:flutter_7challenge/screens/view_model/fetch_user.dart';
 
-import 'package:flutter_7challenge/screens/page/RankingPage.dart';
+import 'package:flutter_7challenge/screens/view/RankingPage.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -46,11 +46,12 @@ class RecordPageState extends ConsumerState<RecordPage> {
 
   @override
   Widget build(BuildContext context) {
+
     var now = DateTime.now();
     final time = ref.watch(stateProvider);
     final isRecorded = ref.watch(checkUserBoolProvider);
     final value = ref.watch(rankingProvider);
-    final auth = ref.read(authRepositoryProvider);
+    // final auth = ref.read(authRepositoryProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -59,7 +60,7 @@ class RecordPageState extends ConsumerState<RecordPage> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-       body: isRecorded  // || now.hour < 6 || now.hour > 24
+      body: isRecorded  ||  now.hour <= 6 || now.hour >= 8
           ? isRecorded
               ? Center(
                   child: AlertDialog(
@@ -79,7 +80,7 @@ class RecordPageState extends ConsumerState<RecordPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  const Padding(
+                   const Padding(
                     padding: EdgeInsets.all(8.0),
                     child: AnalogClock(
                       height: 300,

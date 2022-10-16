@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_7challenge/Data/firestore/AuthRepository.dart';
 
-import 'package:flutter_7challenge/notification.dart';
+import 'package:flutter_7challenge/notification_repository.dart';
 import 'package:flutter_7challenge/screens/launch/registration_screen.dart';
-import 'package:flutter_7challenge/screens/model/check_user_unique.dart';
+import 'package:flutter_7challenge/screens/view_model/check_user_unique.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,14 +35,6 @@ class SettingPageState extends ConsumerState<SettingPage> {
       body: ListView(
         children: [
           ListTile(
-            leading: const Icon(FontAwesomeIcons.twitter),
-            title: const Text("開発者のTwitter"),
-            onTap: () {
-              _twitterUrl();
-            },
-          ),
-          const Divider(),
-          ListTile(
             leading: const Icon(Icons.notification_add),
             title: const Text("通知"),
             trailing: Switch(
@@ -61,18 +53,10 @@ class SettingPageState extends ConsumerState<SettingPage> {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.share),
-            title: const Text("シェアする"),
-            onTap: () {},
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.star),
-            title: const Text("評価する"),
+            leading: const Icon(FontAwesomeIcons.twitter),
+            title: const Text("開発者のTwitter"),
             onTap: () {
-              LaunchReview.launch(
-                  iOSAppId: "com.example.flutter7challenge",
-                  androidAppId: "com.example.flutter_7challenge");
+              _twitterUrl();
             },
           ),
           const Divider(),
@@ -85,9 +69,53 @@ class SettingPageState extends ConsumerState<SettingPage> {
                   builder: (context) => const ChangeUserDialog());
             },
           ),
+          // const Divider(),
+          // ListTile(
+          //   leading: const Icon(Icons.share),
+          //   title: const Text("シェアする"),
+          //   onTap: () {},
+          // ),
+          // const Divider(),
+          // ListTile(
+          //   leading: const Icon(Icons.star),
+          //   title: const Text("評価する"),
+          //   onTap: () {
+          //     LaunchReview.launch(
+          //         iOSAppId: "com.gaku.flutter7challenge",
+          //         androidAppId: "com.example.flutter_7challenge");
+          //   },
+          // ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.contact_support),
+            title: const Text("お問い合わせ"),
+            onTap: () {
+              _contactUrl();
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.policy),
+            title: const Text("プライバシーポリシー"),
+            onTap: () {
+              _policyUrl();
+            },
+          ),
         ],
       ),
     );
+  }
+}
+
+Future<void> _contactUrl() async {
+  Uri contactLink =
+      Uri.parse('https://chain-thrill-de7.notion.site/358cb66bb9f1464a9bf75042c695ebf9');
+  if (!await launchUrl(
+    contactLink,
+    mode: LaunchMode.inAppWebView,
+    webViewConfiguration: const WebViewConfiguration(enableJavaScript: false),
+  )) {
+    throw 'Could not launch $contactLink';
   }
 }
 
@@ -99,6 +127,18 @@ Future<void> _twitterUrl() async {
     webViewConfiguration: const WebViewConfiguration(enableJavaScript: false),
   )) {
     throw 'Could not launch $twitterLink';
+  }
+}
+
+Future<void> _policyUrl() async {
+  Uri policyUrl =
+      Uri.parse('https://chain-thrill-de7.notion.site/f3e4ceea269c469f9deb012cd84f2a47');
+  if (!await launchUrl(
+    policyUrl,
+    mode: LaunchMode.inAppWebView,
+    webViewConfiguration: const WebViewConfiguration(enableJavaScript: false),
+  )) {
+    throw 'Could not launch $policyUrl';
   }
 }
 
@@ -115,7 +155,7 @@ class ChangeUserDialog extends ConsumerWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: TextField(
-            decoration: const InputDecoration(hintText: 'ユーザーネーム'),
+            decoration: const InputDecoration(hintText: 'ユーザーネームを変更しよう'),
             onChanged: (text) async {
               notifier.state = text;
               final isUnique = ref.read(userUniqueStateProvider.notifier);

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_7challenge/screens/model/Ranking.dart';
-import 'package:flutter_7challenge/screens/page/RecordingPage.dart';
+import 'package:flutter_7challenge/screens/view_model/Ranking.dart';
+import 'package:flutter_7challenge/screens/view/RecordingPage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final rankingProvider = ChangeNotifierProvider((ref) {

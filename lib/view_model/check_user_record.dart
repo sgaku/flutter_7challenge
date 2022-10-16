@@ -1,6 +1,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_7challenge/screens/model/fetch_user.dart';
+import 'package:flutter_7challenge/screens/view_model/fetch_user.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 

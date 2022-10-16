@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_7challenge/Data/firestore/AuthRepository.dart';
 import 'package:flutter_7challenge/main.dart';
-import 'package:flutter_7challenge/screens/model/check_user_unique.dart';
+import 'package:flutter_7challenge/screens/view_model/check_user_unique.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final userNameProvider = StateProvider((ref) {

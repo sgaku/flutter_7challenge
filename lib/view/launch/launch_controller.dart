@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_7challenge/Data/firestore/AuthRepository.dart';
 import 'package:flutter_7challenge/main.dart';
-import 'package:flutter_7challenge/notification.dart';
+import 'package:flutter_7challenge/notification_repository.dart';
 import 'package:flutter_7challenge/screens/launch/registration_screen.dart';
-import 'package:flutter_7challenge/screens/model/check_user.dart';
-import 'package:flutter_7challenge/screens/page/RecordingPage.dart';
-import 'package:flutter_7challenge/screens/page/SettingPage.dart';
+import 'package:flutter_7challenge/screens/view_model/check_user.dart';
+import 'package:flutter_7challenge/screens/view/RecordingPage.dart';
+import 'package:flutter_7challenge/screens/view/SettingPage.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';

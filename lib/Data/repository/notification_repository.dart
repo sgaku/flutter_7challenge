@@ -5,9 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'main.dart';
 
-final notificationProvider = Provider((ref) => Notification());
+final notificationProvider = Provider((ref) => NotificationRepository());
 
-class Notification {
+class NotificationRepository {
   Future<void> zonedScheduleNotification() async {
     ///定時の設定
     var notifyTime = "7:00 AM";
