@@ -24,15 +24,15 @@ class TopView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bottomNavigation = ref.watch(bottomNavigationIndexProvider);
+    final navigationIndex = ref.watch(navigationIndexProvider);
 
     return Scaffold(
-      body: _screen[bottomNavigation.selectedIndex],
+      body: _screen[navigationIndex],
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: bottomNavigation.selectedIndex,
+        currentIndex: navigationIndex,
         onTap: (int index) {
           final rankingNotifier = ref.read(rankingStateProvider.notifier);
-          bottomNavigation.onTapItem(index, rankingNotifier);
+         ref.read(navigationIndexProvider.notifier).onTapItem(index, rankingNotifier);
         },
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.touch_app), label: '記録する'),

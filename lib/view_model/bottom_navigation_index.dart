@@ -3,17 +3,29 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'ranking_notifier.dart';
 
+final navigationIndexProvider =
+    StateNotifierProvider<NavigationIndexNotifier, int>(
+        (ref) => NavigationIndexNotifier());
 
-final bottomNavigationIndexProvider = ChangeNotifierProvider((ref) {
-  return BottomNavigationIndex();
-});
+class NavigationIndexNotifier extends StateNotifier<int> {
+  NavigationIndexNotifier() : super(0);
 
-class BottomNavigationIndex extends ChangeNotifier {
-  int selectedIndex = 0;
-
-  void onTapItem(int i, RankingNotifier notifier) {
+  void onTapItem(int index, RankingNotifier notifier) {
     notifier.fetchRankingList();
-    selectedIndex = i;
-    notifyListeners();
+    state =  index;
   }
 }
+
+// final bottomNavigationIndexProvider = ChangeNotifierProvider((ref) {
+//   return BottomNavigationIndex();
+// });
+//
+// class BottomNavigationIndex extends ChangeNotifier {
+//   int selectedIndex = 0;
+//
+//   void onTapItem(int i, RankingNotifier notifier) {
+//     notifier.fetchRankingList();
+//     selectedIndex = i;
+//     notifyListeners();
+//   }
+// }
