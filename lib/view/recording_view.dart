@@ -50,7 +50,6 @@ class RecordPageState extends ConsumerState<RecordingView> {
     var now = DateTime.now();
     final time = ref.watch(nowProvider);
     final isRecorded = ref.watch(checkUserRecordProvider);
-    final ranking = ref.watch(rankingStateProvider);
     // final auth = ref.read(authRepositoryProvider);
 
     return Scaffold(
@@ -111,6 +110,7 @@ class RecordPageState extends ConsumerState<RecordingView> {
                             await ref
                                 .read(rankingStateProvider.notifier)
                                 .fetchRankingList();
+                            final ranking = ref.read(rankingStateProvider);
                             final list = ranking.userList!;
                             final rank = list.indexWhere((element) {
                               return element.time == onPressedTime;
@@ -125,10 +125,6 @@ class RecordPageState extends ConsumerState<RecordingView> {
                             );
                           },
                     child: const Text('記録する'),
-                  ),
-                  Text(
-                    onPressedTime,
-                    style: const TextStyle(color: Colors.green),
                   ),
                 ],
               ),
