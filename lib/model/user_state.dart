@@ -1,5 +1,5 @@
 
-import 'package:flutter_7challenge/Data/model/user_data.dart';
+import 'package:flutter_7challenge/model/user_data.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'user_state.freezed.dart';

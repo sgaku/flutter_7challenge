@@ -3,7 +3,7 @@ import 'package:flutter_7challenge/view_model/ranking_notifier.dart';
 import 'package:flutter_7challenge/view/recording_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../common/class/record_alert_dialog.dart';
+import '../common/component/record_alert_dialog.dart';
 
 class RankingView extends ConsumerWidget {
   const RankingView({Key? key}) : super(key: key);

@@ -5,7 +5,7 @@ import '../view_model/ranking_notifier.dart';
 import 'ranking_view.dart';
 import 'recording_view.dart';
 import 'setting_view.dart';
-import '../view_model/bottom_navigation_index.dart';
+import '../view_model/bottom_navigation_index_provider.dart';
 
 class TopView extends ConsumerWidget {
   static Route<dynamic> route() {

@@ -1,7 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_7challenge/Data/repository/auth_repository.dart';
-import 'package:flutter_7challenge/Data/repository/notification_repository.dart';
-import 'package:flutter_7challenge/Data/repository/user_repository.dart';
 import 'package:flutter_7challenge/view/registration/registration_screen.dart';
 import 'package:flutter_7challenge/view/recording_view.dart';
 import 'package:flutter_7challenge/view/setting_view.dart';
@@ -9,6 +6,9 @@ import 'package:flutter_7challenge/view/setting_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../view_model/auth_provider.dart';
+import '../../view_model/notification_provider.dart';
+import '../../view_model/user_provider.dart';
 import '../top_view.dart';
 
 final launchControllerProvider = Provider((ref) => LaunchController(ref));

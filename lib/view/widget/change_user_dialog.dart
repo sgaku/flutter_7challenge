@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../Data/repository/auth_repository.dart';
-import '../../Data/repository/user_repository.dart';
+import '../../view_model/auth_provider.dart';
+import '../../view_model/user_provider.dart';
 import '../registration/registration_screen.dart';
 
 class ChangeUserDialog extends ConsumerWidget {

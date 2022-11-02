@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_7challenge/common/class/record_alert_dialog.dart';
+import 'package:flutter_7challenge/common/component/record_alert_dialog.dart';
 import 'package:flutter_7challenge/main.dart';
 import 'package:flutter_7challenge/view_model/ranking_notifier.dart';
 import 'dart:async';
@@ -8,9 +8,8 @@ import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:analog_clock/analog_clock.dart';
-
-import '../Data/repository/user_repository.dart';
-import '../common/method/format_for_now.dart';
+import '../common/utils/format_for_now.dart';
+import '../view_model/user_provider.dart';
 
 final nowProvider = StateProvider((ref) {
   return "";

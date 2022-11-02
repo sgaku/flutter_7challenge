@@ -1,10 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../common/method/format_for_now.dart';
-
-final userProvider = Provider((ref) => UserRepository());
+import '../../common/utils/format_for_now.dart';
 
 class UserRepository {
   final _fireStore = FirebaseFirestore.instance;

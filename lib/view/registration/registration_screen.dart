@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_7challenge/Data/repository/auth_repository.dart';
-import 'package:flutter_7challenge/Data/repository/user_repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../view_model/auth_provider.dart';
+import '../../view_model/user_provider.dart';
 import '../top_view.dart';
 
 final userNameProvider = StateProvider((ref) {
@@ -54,16 +54,15 @@ class RegistrationViewState extends ConsumerState<RegistrationView> {
                     userNameController.state = text;
                     final isUniqueController =
                         ref.read(userUniqueProvider.notifier);
-                    isUniqueController.state = await ref
-                        .read(userProvider)
-                        .isUniqueUser(name: text);
+                    isUniqueController.state =
+                        await ref.read(userProvider).isUniqueUser(name: text);
                   },
                 ),
               ),
               ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
-                   foregroundColor: Colors.white,
+                    foregroundColor: Colors.white,
                     shape: const StadiumBorder(),
                   ),
                   onPressed: userName.isEmpty || !isUniqueUser

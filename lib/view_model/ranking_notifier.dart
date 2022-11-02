@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_7challenge/Data/model/user_data.dart';
-import 'package:flutter_7challenge/Data/model/user_state.dart';
-import 'package:flutter_7challenge/common/method/format_for_now.dart';
+import 'package:flutter_7challenge/model/user_data.dart';
+import 'package:flutter_7challenge/model/user_state.dart';
+import 'package:flutter_7challenge/common/utils/format_for_now.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final rankingStateProvider = StateNotifierProvider<RankingNotifier, UserDataState>(

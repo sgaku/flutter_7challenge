@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_7challenge/Data/repository/notification_repository.dart';
-import 'package:flutter_7challenge/common/class/url.dart';
+import 'package:flutter_7challenge/common/constraints/url.dart';
 import 'package:flutter_7challenge/view/widget/change_notification_message_dialog.dart';
 import 'package:flutter_7challenge/view/widget/change_user_dialog.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../view_model/notification_provider.dart';
 
 final switchValueProvider = StateProvider((ref) => false);
 

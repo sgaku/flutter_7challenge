@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 import '../../main.dart';
-
-final notificationProvider = Provider((ref) => NotificationRepository());
 
 class NotificationRepository {
   Future<void> zonedScheduleNotification() async {
